@@ -1,1 +1,111 @@
+DDL : table init datatype index etc.  Table: create alter drop etc
+DML: select update insert delete 
+DCL: set or change database user or role . grant , deny,revoke etc.
+By default, only sysadmin, dbcreator, db_owner, or db_securityadmin have the power to execute DCL.
+
+
+
+
+
+# 1.base  
+mysql -u root -p  # password
+# link host
+mysql -h{hostIp} -u{username} -p{userPassword}
+eg:mysql -h 127.0.0.1 -uroot -p123
+mysql -h 127.0.0.1 -u root --port=3308
+
+mysql>exit
+show databases;
+use test;
+show tables;
+describe tableTest;
+create testDatabase;
+delete tableTest;
+select * from product;
+insert into product values(pair);
+update product  set name='iphone',anotherName='b', ... where id=1, ...
+# change root password 
+update mysql.user set password=PASSWORD('newPWS') where user='root';
+flush frivileges;
+
+mysqldump -uroot -p --opt databaseName>{dumpName}://{dir}
+
+-----------------------------------------------------------------------
+# MySQL optimization principle.
+The MySQL logical architecture is divided into three layers, the top layer is the client layer, such as connection processing, authorization authentication, security and other functions are handled at this layer.
+Most of MySQL's core services are in the middle layer, including query, parsing, parsing, analysis, optimization, caching, built-in functions (time, math, encryption, etc.). All the functionality across the storage engine is also implemented at this layer: stored procedures, triggers, views, etc.
+The lowest layer is the storage engine, which is responsible for data storage and extraction in MySQL. The intermediate service layer communicates with the storage engine through APIs, which mask the differences between different storage engines.
+
+# MySQL query process
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
