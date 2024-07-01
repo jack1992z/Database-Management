@@ -1,0 +1,490 @@
+
+-- net start mysql
+-- sc create mysql binPath=mysqld_bin_path
+
+-- mysql -h localhost -p 3306 -u root -p 123456@
+
+
+#1. database 
+select DATABASE();
+select now(),user(),version();
+create database[ if not exists] database_name Option_information
+  character set charset_name
+  collate collation_name
+
+show databases[like 'pattern']
+show create database  database_name;
+alter database database_name Option_information
+drop database [if exists] database_name 
+
+#2.table 
+create [temporary] table [if not exists] [db.]table_name ( Table Structure Definition ) [ Table Options ]
+  Field Name  Data type [NOT NULL | NULL] [DEFAULT default_value] [AUTO_INCREMENT] [UNIQUE [KEY] | [PRIMARY] KEY] [COMMENT 'string']
+
+Table Options:
+ charset=charset_name
+ engine=engine_name : [InnoDB MyISAM Memory/Heap BDB Merge Example CSV MaxDB Archive]
+ show engines 
+ show engine engine_name {LOGS|STATUS}
+ auto_increment=Number
+ data directory='dir'
+ index directory='dir'
+ comment = 'string'
+ partition by ...
+
+show tables [like 'pattern']
+show tables from tb_name;
+
+show create table tb_name;
+desc tb_name /describe tb_name / explain tb_name /show columns from tb_name  [LIKE 'PATTERN'];
+show table status [from db_name] [like 'parttern'];
+
+alter table tb_name table_options;
+  eg:alter table tb_name engine=MYISAM;
+
+rename table old_tb_name to new_tb_name;
+rename table old_tb_name to db_name.tb_name ;
+
+alter table  tb_name operate_name
+   add [column] Field_definitions
+      alter  field_name
+      first
+   add primary  key(field_name)
+   add unique [index_name](field_name)
+   add index [index_name] (field_name)
+   drop [column] field_name
+   modify[column] field_name field_attr
+   change[column] olde_filed_name new_filed_name field_attr
+   drop primary key
+   drop foreign key  foreign_key
+
+drop table [if exists] tb_name ...
+truncate [table] tb_name;
+craete table tb_name like other_tb_name;
+create table tb_name [as] select * from other_tb_name;
+check table tb1_name[,tb1_name] ... [option] ...;
+optimize [local | no_write_to_binlog] table tb1_name [,tb1_name] ...
+repair [local | no_write_to_binlog] table tb1_name[,tb1_name] ... [quick] [extended] [use_frm]
+analyze [local | no_write_to_binlog] table tb1_name[,tb1_name] ...
+
+#3. table operate
+insert:
+insert [into] tb_name [(filed list)] values (value list)[,(value list),....]
+replace  [into] tb_name [(filed list)] values (value list)[,(value list),....]
+insert [into] tb_name set field_name=value[,field_name=value,...]
+
+select:
+select field_name from tb_name [other sql]
+
+delete:
+delete from tb_name [Delete the conditional clause]
+
+update:
+update tb_name set filed_name=new_filed_value[,filed_name=new_filed_value] [update_conditions]
+
+#4. charaset
+show variables like 'character_set_&';
+  character_set_client
+  character_set_results
+  character_set_connection
+set var = value
+  set character_set_client = gbk;
+  set character_set_results = gbk;
+  set character_set_connection = gbk;
+set names GBK;
+
+show character set [like 'pattern'] / show charset [like 'pattern']
+show collation [like 'pattern'] View all character sets
+show collation [like 'pattern'] View all collation sets
+charset Character set encoding.   Set the character set encoding
+collate Proofing set encoding. Set up the proofing set encoding
+
+#5 data type 
+tinyint 1byte  -128 ~ 127  0 ~ 255
+smalllint 2byte -32768 ~ 32767
+mediumint 3byte -8388608 ~ 8388607
+int 4byte
+bigint 8byte
+int(M)  eg: int(5) 123 -> 00123
+
+folat 4byte
+doublie 8byte  
+  loat(M,D) double(M,D)  M is the total number of digits, and D is the number of decimal places
+
+decimal 
+decimal(M,D)
+
+char  255
+varchar  65535
+
+blob : tinyblob, blob,mediumblob,longblob
+test: tinytext,text,mediumtext,longtext
+
+binary,varbinary
+
+datetime 8byte 1000-01-01 00:00:00  - 9999-12-31 23:59:59
+date 3byte 1000-01-01 - 9999-12-31
+timestamp 4byte 19700101000000 - 2038-01-19 03:14:07
+time 3byte -838:59:59 - 838:59:59
+year 1byte 1901 - 2155
+
+eg:
+datetime YYYY-MM-DD hh:mm:ss
+timestamp: YY-MM-DD hh:mm:ss
+            YYYYMMDDhhmmss
+            YYMMDDhhmmss
+            YYYYMMDDhhmmss
+            YYMMDDhhmmss
+date: YYYY-MM-DD
+            YY-MM-DD
+            YYYYMMDD
+            YYMMDD
+            YYYYMMDD
+            YYMMDD
+tiem:hh:mm:ss
+     hhmmss
+     hhmmss
+year:YYYY
+     YY
+
+enum(val1,val2,val3,...)  maxvalue:65535
+
+set(val1,val2,val3,...)  8byte  64
+eg:
+create table tab ( gender set('male', 'female', 'null') );
+insert into tab values ('male', 'female') comment 'xxx';
+
+#6. Column Properties (Column Constraints)
+primary:
+create table tb_name(id int,stu varchar(10),primary key (id));
+create table tab ( id int, stu varchar(10), age int, primary key (stu, age));
+
+insert into tab values (null, 'val');
+insert into tab values (null, 'val');
+insert into tab values (default, 'val');
+alter table tbl auto_increment = x;
+alter table t1 add constraint `t1_t2_fk` foreign key (t1_id) references t2(id);
+
+foreign key:
+  cascade
+  set null
+  restrict
+
+#7.select
+SELECT [ALL|DISTINCT] select_expr FROM -> WHERE -> GROUP BY [sum func] -> HAVING -> ORDER BY -> LIMIT
+select * from tb;
+select stu,20+10,now() from tb;
+select stu+10 as add10 from tb;
+
+select * from tb1 as aa,tb2 as bb;
+select * from tb1 use index(key1,key2) where key1=1 and key2=2 and key3=3;
+select * from tb1 ignore index(key3) where key1=1 and key2=2 and key3=3;
+
+where:
+  =, <=>, <>, !=, <=, <, >=, >, !, &&, ||,
+  in (not) null, (not) like, (not) in, (not) between and, is (not), and, or, not, xor
+  is/is not  add : ture/false/unknown，Verify the authenticity of a value.
+  <=>  =  <> ,<=> Can be used for null comparisons.
+
+group by: field_name asc desc
+count,sum,max,min,avg,
+groupby_concat
+
+having and where
+order by
+limit
+distinct
+
+#8.Union
+select ... union [all|distinct] select ...
+
+select * from (select * from tb where id>0) as subfrom where id>1;
+select * from tb where money = (select max(money) from tb);
+select column1 from t1 where exists (select * from t2);
+select * from t1 where (id, gender) in (select id, gender from t2);
+!= all()  == not in 
+= some()  == in,any 
+!=some() != not in 
+
+#9.join
+inner join
+select * from tb1
+inner join tb2 on tb1.id = tb2.id;
+
+select * from tb1 cross join tb2;
+
+outer join:
+left join, right join
+
+natural join:
+natural join
+natural left join
+natural right join
+
+select info.id, info.name, info.stu_num, extra_info.hobby, extra_info.sex
+from info, extra_info
+where info.stu_num = extra_info.stu_id;
+
+#10.insert
+insert into tb1_name set field=value,...;
+insert into tb1_name values (),(),();
+insert into tb1_name values(field_value,20,now());
+insert into tb1_name values(field_value,default);
+insert into tb1_name select ...;
+insert into tb1_name values/set/select on duplicate key update filed=value,...;
+
+#11.delete
+delete from tb1_name [where where_definition] [order by ...] [limit row_count];
+ where
+ limit
+ order by + limit
+
+#12.truncate
+truncate [table] tb1_name;
+
+#13.dump
+export:
+mysqldump [options] db_name [tables]
+mysqldump [options] ---database DB1 [DB2 DB3...]
+mysqldump [options] --all--database
+export one table:
+mysqldump -uUser_name -pPassworrd db_name tb_name > file_name(eg:a.sql)
+mysqldump -uUser_name -pPassworrd db_name tb1,tb2,tb3 > a.sql
+#export all tables
+mysqldump -uUser_name -pPassworrd db_name > a.sql
+mysqldmp -uUser_name -pPassworrd --lock-all-tables --database db_name > a.sql
+
+import:
+source dump_file
+mysql -uUser_name -pPassworrd db_name < bump_file
+
+#14.View
+CREATE [OR REPLACE] [ALGORITHM = {UNDEFINED | MERGE | TEMPTABLE}] VIEW view_name [(column_list)] AS select_statement
+show create view view_name;
+drop view [if exists] view_name ...;
+alter view view_name [(column_list)] as select_statement;
+
+#15.transaction
+START TRANSACTION; or begin
+commit;
+rollback;
+
+acid: atomicity , consistency, isolation,durability
+
+savepoint point_name;
+rollback to savepoint point_name
+release savepoint point_name
+SET autocommit = 0|1;
+
+#16 lock
+lock table tb1_name [as alias]
+unlock tables
+
+#17.trigger
+CREATE TRIGGER trigger_name trigger_time trigger_event ON tbl_name FOR EACH ROW trigger_stmt
+trigger_time: before or after
+trigger_event:insert, update,delete.
+trigger_stmt: begin ... end
+
+DROP TRIGGER [schema_name.]trigger_name
+
+concat(str1,str2,...)
+concat_ws(separator,str1,str2,...)
+
+if condition then
+   pass
+elseif condition then
+   pass
+else
+   pass
+end if;
+
+delimiter Customize the closing symbol
+   sql
+Customize the closing symbol
+delimiter;
+
+begin
+  pass
+end
+
+insert into on duplicate key update
+    [before insert,after insert]
+    [before insert, before update,after update]
+    [before insert, before update]
+
+replace : before insert,before delete,after delete,after insert 
+
+
+#18.SQL Programming
+declare var_name[,...] type [default value]
+set or select into ...
+
+set Statements can be defined and assigned values to variables.
+set @var=value;  or use select into ...
+select @var:=20;
+select @v1:=id,@v2=name from t1 limit 1;
+select * from tb1_name where @var:=30;
+select into .....
+   | slect max(height) into @max_height from tb;
+
+if search_condition then
+   statement_list
+[elseif search_condition then statement_list]
+...
+[else
+    statement_list]
+end if;
+
+case value when [compare-value] then result
+[when [compare-value] then result ...]
+[else result]
+end
+
+[begin_label:] while search_condition do
+  statement_list
+end while [end_label];
+     leave, iterate
+
+func:
+abs(x)
+format(x,d)  -- format(1234567.456, 2) = 1,234,567.46
+ceil(x) -- ceil(10.1) = 11
+floor(x) -- floor (10.1) = 10
+round(x)
+mod(m,n)  -- m%n m mod n   10%3=1
+pi()
+pow(m,n) -- m^n
+sqrt(x)
+rand()
+truncate(x,d)
+now(),current_timestamp();
+current_date();
+current_time();
+date('yyyy-mm-dd hh:ii:ss');
+time('yyyy-mm-dd hh:ii:ss');
+date_format('yyyy-mm-dd hh:ii:ss', '%d %y %a %d %m %b %j');
+unix_timestamp();
+from_unixtime();
+
+length(string);
+char_length(string);
+substring(str, position [,length])
+replace(str ,search_str ,replace_str)
+instr(string ,substring)
+concat(string [,...])
+charset(str)
+lcase(string)
+left(string, length)
+load_file(file_name)
+locate(substring, string [,start_position])
+lpad(string, length, pad)
+ltrim(string)
+repeat(string, count)
+rpad(string, length, pad)
+rtrim(string)
+strcmp(string1 ,string2)
+
+case when [condition] then result [when [condition] then result ...] [else result] end
+if(expr1,expr2,expr3)
+
+count()
+sum();
+max();
+min();
+avg();
+group_concat()
+
+md5();
+default();
+
+CREATE FUNCTION function_name (var list) RETURNS return_value
+
+drop function [if exists] function_name;
+show function status like 'partten';
+show create function function_name;
+alter function function_name;
+
+craeate procedure sp_name var_list
+   PROCEDURE....
+in
+out
+inout
+
+in|out|inout var  data_type
+in ...
+out ...
+inout ..
+create procedure procedure_name (var_list)
+begin
+   produce...
+end
+
+
+#19.user and privileges
+linux: /usr/local/mysql/bin/safe_mysqld --skip-grant-tables &
+windows: mysqld --skip-grant-tables
+use mysql;
+update 'user' set password=PASSWORD('psss123456@') where user = 'root';
+flush privileges;
+
+create user user_name indentified by [password] ;
+rename user old_user to new_user;
+set password = password('pass123456@');
+set password for user_name = password('pass123456@');
+drop user user_name;
+grant select,update,insert,drop,...  on tb1_name user_name [identified by [password] 'password']
+  grant all privileges on 'pms'.* to 'pms'@% identified by '1234456k@';
+
+show grants for user_name ;
+  show grants;
+  or show grants for cuttent_user;
+  or show grants for current_user();
+
+revoke priviletes_list on tb_name from user_name;
+revoke all privileges,grant option from user_name;
+Global level: Global permissions apply to all databases in a given server, mysql.user
+    GRANT ALL ON *.* AND REVOKE ALL ON *.* GRANT AND REVOKE ONLY GLOBAL PERMISSIONS.
+Database level: Database permissions apply to all targets in a given database, mysql.db, mysql.host
+    GRANT ALL ON db_name.* and REVOKE ALL ON db_name.* grant and revoke only database permissions.
+Table level: Table permissions apply to all columns in a given table, mysql.talbes_priv
+    GRANT ALL ON db_name.tbl_name and REVOKE ALL ON db_name.tbl_name grant and revoke only table permissions.
+Column level: Column permissions apply to a single column in a given table, mysql.columns_priv
+    WHEN USING REVOKE, YOU MUST SPECIFY THE SAME COLUMN AS THE AUTHORIZED COLUMN.
+
+-- List of permissions
+-- List of permissions
+ALL [PRIVILEGES] -- Sets all simple privileges except the GRANT OPTION
+ALTER -- Allows the use of ALTER TABLE
+ALTER ROUTINE -- Change or cancel a stored subroutine
+CREATE -- Allows the use of CREATE TABLE
+CREATE ROUTINE -- Creates a saved subroutine
+CREATE TEMPORARY TABLES -- ALLOWS THE USE OF CREATE TEMPORARY TABLES
+CREATE USER -- ALLOWS THE USE OF CREATE USER, DROP USER, RENAME USER, AND REVOKE ALL PRIVILEGES.
+CREATE VIEW -- Allows the use of CREATE VIEW
+DELETE -- Allows the use of DELETE
+DROP -- Allows the use of DROP TABLE
+EXECUTE -- Allows the user to run stored subroutines
+FILE -- Allow the use of SELECT... INTO OUTFILE AND LOAD DATA INFILE
+INDEX -- ALLOW THE USE OF CREATE INDEX AND DROP INDEX
+INSERT -- Allows the use of INSERT
+LOCK TABLES -- Allows the use of LOCK TABLES for tables for which you have SELECT permissions
+PROCESS -- SHOW FULL PROCESSLIST IS ALLOWED
+REFERENCES -- Not implemented
+RELOAD -- Allow the use of FLUSH
+REPLICATION CLIENT -- ALLOWS THE USER TO ASK FOR THE ADDRESS OF THE SECONDARY OR PRIMARY SERVER
+REPLICATION SLAVE -- FOR REPLICATION SLAVE SERVER (READ BINLOG EVENTS FROM THE MASTER SERVER)
+SELECT -- Allows the use of SELECT
+SHOW DATABASES -- Displays all databases
+SHOW VIEW -- ALLOWS THE USE OF SHOW CREATE VIEW
+SHUTDOWN -- Allows the use of mysqladmin shutdown
+SUPER -- ALLOW THE USE OF CHANGE MASTER, KILL, PURGE MASTER LOGS AND SET GLOBAL STATEMENTS, MYSQLADMIN DEBUG COMMAND; Allows you to connect (once), even if max_connections has been reached.
+UPDATE -- Allows the use of UPDATE
+USAGE -- A synonym for "no permissions".
+GRANT OPTION -- Allows permission to be granted
+
+#20.analyze
+analyze [local | no_write_to_binlog] table tb_name ...
+check table tb1_name[,tb1_name] ... [option] ...
+option = {quick | fast | medium | extended | changed}
+optimize [local | no_write_to_binglog] table tb1_name [,tb1_name] ... 
