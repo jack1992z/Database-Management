@@ -1,4 +1,3 @@
--- Active: 1719589117756@@127.0.0.1@5432@postgres
 
 CREATE DATABASE curso WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'C' LC_CTYPE = 'C';
 
