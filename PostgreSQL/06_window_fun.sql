@@ -1,4 +1,3 @@
--- Active: 1719589117756@@127.0.0.1@5432@postgres@public
 ---sum() over();count() over();avg() over();
 -- row_number() over();rank() over(); dense_rank() over();
 -- ntile() over()
