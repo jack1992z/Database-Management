@@ -1,5 +1,3 @@
--- Active: 1719589117756@@127.0.0.1@5432@postgres@public
-
 SELECT * FROM "esquema"."DEPARTAMENTOS";
 
 -- SELECT DISTINCT
