@@ -1,4 +1,3 @@
--- Active: 1719589117756@@127.0.0.1@5432@postgres@publics
 
 -- 1. create table
 create table sensor_stat(  
